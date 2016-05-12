@@ -20,6 +20,7 @@ Template.barChart.rendered = function() {
   var key = function(d) {
     return d._id;
   };
+
   Deps.autorun(function(){
     var hosts = Hosts.find({}).fetch();
 
@@ -30,10 +31,11 @@ Template.barChart.rendered = function() {
                                       .attr("height", height);
 
       var modifier = {fields:{value:1}};
+      //console.log(svg);
 
       // Get the data
       var dataset = hostObj.pings;
-      console.log(dataset);
+
       // Update scale domains
       xScale.domain(d3.range(dataset.length));
       yScale.domain([0, d3.max(dataset, function(d) {return d.value;})]);
@@ -41,7 +43,7 @@ Template.barChart.rendered = function() {
       // Select
       var bars = svg.selectAll("rect")
                     .data(dataset, key);
-      console.log(bars);
+      //console.log(bars);
 
       // Enter
       bars.enter()
