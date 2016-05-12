@@ -7,16 +7,14 @@ Meteor.startup(() => {
   var ip = 'canyonsdistrict.org';
   var timeout = 3 * 1000;
   var maxSize = 10;
+  var initialHosts = ['canyonsdistrict.org', '192.168.1.1'];
 
-  Hosts.insert({
-    host:ip,
-    pings:[]
-  });
-
-  Hosts.insert({
-    host:'192.168.1.1',
-    pings:[]
-  })
+  for(var i=0; i<initialHosts.length; i++) {
+    Hosts.insert({
+      host:initialHosts[i],
+      pings:[]
+    });
+  }
 
   var myInterval = Meteor.setInterval(function() {
     // Find the next highest position
