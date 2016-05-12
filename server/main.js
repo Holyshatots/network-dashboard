@@ -2,11 +2,13 @@ import { Meteor } from 'meteor/meteor';
 
 Meteor.startup(() => {
   var Hosts = new Meteor.Collection('Hosts');
+
+  // Refresh all of the information
   Hosts.remove({});
 
   var ip = 'canyonsdistrict.org';
   var timeout = 3 * 1000;
-  var maxSize = 10;
+  var maxSize = 30;
   var initialHosts = ['canyonsdistrict.org', '192.168.1.1'];
 
   for(var i=0; i<initialHosts.length; i++) {
@@ -23,32 +25,27 @@ Meteor.startup(() => {
       // Get the current host
       var hostObj = hosts[i];
 
+      var nextPosition = hostObj.pings.length;
+
       // Do the actual ping
       var res = Ping.host(hostObj.host);
 
-      // Add the new ping result
+      // Add the new ping result and limit to the max size
       Hosts.update({host:hostObj.host},
         {$push:
           {pings:
             {
-              value:res.latency,
-              status:res.status,
-              online:res.online
+              $each: [{
+                value:res.latency,
+                status:res.status,
+                online:res.online,
+                _id: Random.id()
+              }],
+              $slice: -maxSize
             }
           },
-
         }
       );
-
-      // Remove the oldest record if necessary
-      if(hostObj.pings.length > maxSize) {
-        Hosts.update({host:hostObj.host},
-          {$pop: {
-              pings: -1
-            }
-          }
-        );
-      }
     }
 
   }, timeout);

@@ -10,7 +10,7 @@ Template.barChart.helpers({
 })
 
 Template.barChart.rendered = function() {
-  var width = 600;
+  var width = 900;
   var height = 250;
 
   var xScale = d3.scale.ordinal().rangeRoundBands([0, width], 0.05);
@@ -35,6 +35,7 @@ Template.barChart.rendered = function() {
 
       // Get the data
       var dataset = hostObj.pings;
+      console.log(dataset);
 
       // Update scale domains
       xScale.domain(d3.range(dataset.length));

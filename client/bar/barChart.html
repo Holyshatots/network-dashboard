@@ -2,7 +2,9 @@
 	{{#each hosts}}
 		<div class="col-sm-6">
 			<div class="panel panel-default">
-				<div class="panel-heading">{{host}}</div>
+				<div class="panel-heading">{{host}}
+					<span class="pull-right">{{status}}</span>
+				</div>
 				<div class="panel-body">
 			    <svg class="barChart" host="{{host}}">
 			    </svg>
