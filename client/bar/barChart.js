@@ -1,28 +1,8 @@
-var Bars = new Meteor.Collection(null);
+var Pings = new Meteor.Collection('Pings');
 Session.setDefault('barChartSort', 'none');
 Session.setDefault('barChartSortModifer', undefined);
 
-if(Bars.find({}).count() === 0) {
-  for( i = 0; i < 10; i++) {
-    Bars.insert({
-      value:Math.floor(Math.random() * 25)
-    });
-  }
-}
-
 Template.barChart.events({
-  'click #add':function() {
-    var highest = Bars.findOne({}, {sort:{position:1}});
-    if(highest) {
-      var highestPos = highest.position;
-    } else {
-      var highestPos = 1;
-    }
-    Bars.insert({
-      value:Math.floor(Math.random() * 25),
-      position: highestPos
-    });
-  }
 });
 
 Template.barChart.rendered = function() {
@@ -42,17 +22,18 @@ Template.barChart.rendered = function() {
                                   .attr("height", height);
 
   Deps.autorun(function(){
-    var modifier = {fields:{value:1}};
-
+    //var modifier = {fields:{value:1}};
+    var modifier = {};
     // Keep a maximum number of columns visible at one time
     var maxVisible = 10;
-    if(Bars.find({}).count() > maxVisible) {
-      var toRemove = Bars.findOne({}, {sort:{position:1}});
-      Bars.remove({_id:toRemove._id});
+    if(Pings.find({}).count() > maxVisible) {
+      var toRemove = Pings.findOne({}, {sort:{position:1}});
+      Pings.remove({_id:toRemove._id});
     }
 
-    var dataset = Bars.find({}, modifier).fetch();
-
+    // Get the data
+    var dataset = Pings.find({}, modifier).fetch();
+    console.log(dataset);
     // Update scale domains
     xScale.domain(d3.range(dataset.length));
     yScale.domain([0, d3.max(dataset, function(d) {return d.value;})]);
