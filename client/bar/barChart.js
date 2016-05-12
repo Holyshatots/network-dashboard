@@ -22,10 +22,6 @@ Template.barChart.events({
       value:Math.floor(Math.random() * 25),
       position: highestPos
     });
-  },
-  'click #remove':function(){
-    var toRemove = Bars.findOne({}, {sort:{position:1}});
-    Bars.remove({_id:toRemove._id});
   }
 });
 
@@ -47,6 +43,13 @@ Template.barChart.rendered = function() {
 
   Deps.autorun(function(){
     var modifier = {fields:{value:1}};
+
+    // Keep a maximum number of columns visible at one time
+    var maxVisible = 10;
+    if(Bars.find({}).count() > maxVisible) {
+      var toRemove = Bars.findOne({}, {sort:{position:1}});
+      Bars.remove({_id:toRemove._id});
+    }
 
     var dataset = Bars.find({}, modifier).fetch();
 
