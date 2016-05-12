@@ -1,8 +1,5 @@
 var Hosts = new Meteor.Collection('Hosts');
 
-Template.barChart.events({
-});
-
 Template.barChart.helpers({
   hosts: function() {
     return Hosts.find();
@@ -31,11 +28,9 @@ Template.barChart.rendered = function() {
                                       .attr("height", height);
 
       var modifier = {fields:{value:1}};
-      //console.log(svg);
 
       // Get the data
       var dataset = hostObj.pings;
-      console.log(dataset);
 
       // Update scale domains
       xScale.domain(d3.range(dataset.length));
@@ -44,7 +39,6 @@ Template.barChart.rendered = function() {
       // Select
       var bars = svg.selectAll("rect")
                     .data(dataset, key);
-      //console.log(bars);
 
       // Enter
       bars.enter()

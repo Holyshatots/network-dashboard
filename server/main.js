@@ -6,11 +6,19 @@ Meteor.startup(() => {
   // Refresh all of the information
   Hosts.remove({});
 
-  var ip = 'canyonsdistrict.org';
+  // Configuration
   var timeout = 3 * 1000;
   var maxSize = 30;
-  var initialHosts = ['canyonsdistrict.org', '192.168.1.1'];
+  var initialHosts = [
+      'canyonsdistrict.org',
+      '192.168.1.1',
+      'google.com',
+      'facebook.com',
+      'reddit.com',
+      'imgur.com'
+      ];
 
+  // Add in all of the hosts
   for(var i=0; i<initialHosts.length; i++) {
     Hosts.insert({
       host:initialHosts[i],
@@ -18,14 +26,13 @@ Meteor.startup(() => {
     });
   }
 
+  // Start an interval to ping the servers
   var myInterval = Meteor.setInterval(function() {
     // Find the next highest position
     var hosts = Hosts.find({}).fetch();
     for(var i=0; i<hosts.length; i++) {
       // Get the current host
       var hostObj = hosts[i];
-
-      var nextPosition = hostObj.pings.length;
 
       // Do the actual ping
       var res = Ping.host(hostObj.host);
@@ -44,6 +51,15 @@ Meteor.startup(() => {
               $slice: -maxSize
             }
           },
+        }
+      );
+
+      Hosts.update({host:hostObj.host},
+        {
+          $set:
+          {
+            status:hostObj.pings[hostObj.pings.length - 1].status
+          }
         }
       );
     }
