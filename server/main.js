@@ -1,25 +1,57 @@
 import { Meteor } from 'meteor/meteor';
 
 Meteor.startup(() => {
-  var ip = 'google.com';
-  var Pings = new Meteor.Collection('Pings');
-  var myInterval = Meteor.setInterval(function() {
-    var res = Ping.host(ip);
+  var Hosts = new Meteor.Collection('Hosts');
+  Hosts.remove({});
 
+  var ip = 'canyonsdistrict.org';
+  var timeout = 3 * 1000;
+  var maxSize = 10;
+
+  Hosts.insert({
+    host:ip,
+    pings:[]
+  });
+
+  Hosts.insert({
+    host:'192.168.1.1',
+    pings:[]
+  })
+
+  var myInterval = Meteor.setInterval(function() {
     // Find the next highest position
-    var highest = Pings.findOne({}, {sort:{position:1}});
-    if(highest) {
-      var highestPos = highest.position;
-    } else {
-      var highestPos = 1;
+    var hosts = Hosts.find({}).fetch();
+    for(var i=0; i<hosts.length; i++) {
+      // Get the current host
+      var hostObj = hosts[i];
+
+      // Do the actual ping
+      var res = Ping.host(hostObj.host);
+
+      // Add the new ping result
+      Hosts.update({host:hostObj.host},
+        {$push:
+          {pings:
+            {
+              value:res.latency,
+              status:res.status,
+              online:res.online
+            }
+          },
+
+        }
+      );
+
+      // Remove the oldest record if necessary
+      if(hostObj.pings.length > maxSize) {
+        Hosts.update({host:hostObj.host},
+          {$pop: {
+              pings: -1
+            }
+          }
+        );
+      }
     }
 
-    // Add a new random value
-    Pings.insert({
-      value:res.latency,
-      status:res.status,
-      online:res.online,
-      position:highestPos
-    });
-  }, 1000);
+  }, timeout);
 });
