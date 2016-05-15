@@ -6,17 +6,20 @@ Meteor.startup(() => {
   // Refresh all of the information
   Hosts.remove({});
 
+  // Read in the initial hosts from /public/data/initial.txt
+  var fs = Npm.require('fs');
+  var initialHosts = fs.readFileSync(process.cwd() + '/../web.browser/app/data/initial.txt', 'utf8').toString().split("\n");
+
+  // Remove any blank lines
+  for(var i=0; i<initialHosts.length; i++) {
+    if(initialHosts[i].trim() === '') {
+      initialHosts.splice(i, 1);
+    }
+  }
+
   // Configuration
   var timeout = 3 * 1000;
   var maxSize = 30;
-  var initialHosts = [
-      'canyonsdistrict.org',
-      '192.168.1.1',
-      'google.com',
-      'facebook.com',
-      'reddit.com',
-      'imgur.com'
-      ];
 
   // Add in all of the hosts
   for(var i=0; i<initialHosts.length; i++) {

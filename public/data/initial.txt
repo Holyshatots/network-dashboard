@@ -1,0 +1,6 @@
+canyonsdistrict.org
+192.168.1.1
+google.com
+facebook.com
+reddit.com
+imgur.com
