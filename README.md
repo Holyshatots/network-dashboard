@@ -1,10 +1,10 @@
 # Network Dashboard
 
-A dashboard that can display network information in real time. Still in active development.
+A dashboard that can display network information in real time.
 
 ![Screenshot](https://raw.githubusercontent.com/Holyshatots/network-dashboard/master/screenshot.png)
 
-### To Install Production (Untested)
+### To Install Production
 
 On the computer that will be running the web service:
 
@@ -19,7 +19,7 @@ On the computer that will be running the web service:
 9. `MONGO_URL=mongodb://localhost:27017/myapp ROOT_URL=http://my-app.com node main.js`
 
 
-### To Install Development (Untested)
+### To Install Development
 
 1. Install [meteor](https://www.meteor.com/install#!)
 2. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
